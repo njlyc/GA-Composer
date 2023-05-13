@@ -52,7 +52,7 @@ class SingleChromosome_StreamTranslator(Translator):
         self.encode_dim = self.bar_num * round(self.bar_beat * self.beat_duration) * round(1/min_quarter_duration)
         # Upper bound of the elementin encoded array.
         self.max_encode = self.fermata_idx
-        self.obj_arg_info = {'fermata_code': self.max_encode, 'rest_code': 0}
+        self.obj_arg_info = {'fermata_code': self.max_encode, 'rest_code': 0, 'translator': self}
 
     def encode(self, stream: Stream, *args: Any, **kwds: Any) -> np.ndarray:
         stream_arr = np.zeros(self.length, dtype=np.int8)
@@ -118,7 +118,7 @@ class PitchOnlyTranslator(Translator):
         self.encode_dim = self.bar_num * round(self.bar_beat * self.beat_duration) * round(1/quarter_duration)
         # Upper bound of the elementin encoded array.
         self.max_encode = len(self.pitch2idx)
-        self.obj_arg_info = {'rest_code': 0}
+        self.obj_arg_info = {'rest_code': 0, 'translator': self}
         
     def decode(self, stream_arr: np.ndarray) -> Stream:
         ret_stream = Stream()
