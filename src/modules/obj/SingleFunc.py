@@ -49,7 +49,7 @@ def cn_g4_fitness(x: np.ndarray, rest_code: int, translator: Translator):
     good_idx = [translator.pitch2idx[pitch] for pitch in pitches]
     return np.bitwise_or.reduce([ (x == idx) for idx in good_idx ]).mean()
 
-@register("not_monotone", -1)
+@register("not_monotonic", -1)
 def cn_g5_fitness(x: np.ndarray, rest_code: int, translator: Translator):
     x = x[x != rest_code]
     return np.abs(x[-1] - x[0]) <= len(x)
@@ -73,13 +73,19 @@ def l1_fitness(x: np.ndarray, rest_code: int, translator: Translator):
 def reduce_rest(x: np.ndarray, rest_code: int, translator: Translator):
     return np.mean(x != rest_code)
 
+@register("returning", 1)
+def returning_fitness(x: np.ndarray, rest_code: int, translator: Translator):
+    x = x[x != rest_code]
+    N = len(x)
+    return np.abs(x[:N//2].mean() - x[N//2:].mean())
 
 @register("weighted", -1)
 def weighted_fitness(x: np.ndarray, rest_code: int, translator: Translator):
     return \
           cn_g4_fitness(x, rest_code, translator) \
         - cn_g7_fitness(x, rest_code, translator) * 0.001 \
-        + cn_g6_fitness(x, rest_code, translator) * 0.6 \
-        - reduce_rest(x, rest_code, translator) * 0.5 \
+        + cn_g6_fitness(x, rest_code, translator) * 0.3 \
+        - reduce_rest(x, rest_code, translator) * 0.95 \
         + l1_fitness(x, rest_code, translator) * 0.007 \
+        - returning_fitness(x, rest_code, translator) * 0.03 \
 
