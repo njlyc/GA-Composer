@@ -2,7 +2,7 @@
     "job_name": "test",
     "out_path": "out",
     "code_type": "pitchOnly",
-    "sample_num": 2,
+    "sample_num": 10,
     "lilypondPath": "./lilypond/bin/lilypond.exe",
     "translator_args_dict": 
     {

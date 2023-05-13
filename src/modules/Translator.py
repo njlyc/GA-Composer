@@ -4,9 +4,19 @@ from music21.stream import Stream
 from music21.note import Note, Rest
 from music21.duration import Duration
 from src.utils.utils import _get_available_pitches
+import abc
 
 
-class SingleChromosome_StreamTranslator:
+class Translator(metaclass=abc.ABCMeta):
+     
+    # These abstract methods and attributes must be implemented cuz they are used in Composer.GAComposer
+    @abc.abstractmethod
+    def decode(self):
+        pass
+
+    
+
+class SingleChromosome_StreamTranslator(Translator):
     '''
         Encode a stream to a numpy array.
         The SimpleEncoder ony support single track without any chords.
@@ -73,3 +83,48 @@ class SingleChromosome_StreamTranslator:
         return ret_stream
 
 
+
+class PitchOnlyTranslator(Translator):
+    '''
+        Encode a stream to a numpy array.
+        Single track without any chords.
+        A shortest duration is encode follow the rules below:
+            Rest: 0
+            Note: pitch_lowest ~ pitch_highest
+    '''
+    def __init__(self, pitch_lowest: str, pitch_highest: str, bar_num: int, signature: str, quarter_duration: float = 0.25) -> None:
+        '''Initialization.
+
+        Args:
+            pitch_lowest (str): The lowest pitch in the note set.
+            pitch_highest (str): The lowest pitch in the note set.
+            bar_num (int): The bar num that once the encoder could encode.
+            signature(str): The time signature of the encoder.
+            quarter_duration (float, optional): The duration of the encoder, where a signature dominator's duration is 1. Defaults to 0.25 (16th in x/4 signature).
+        '''
+        avl_pitches = _get_available_pitches(pitch_lowest, pitch_highest)
+        self.bar_num = bar_num
+        self.signature = signature
+        self.bar_beat, self.beat_duration = map(int, signature.split('/'))
+        # Convert beat duration in the unit of quarter. 
+        self.beat_duration = 4 / self.beat_duration
+        self.quarter_duration = quarter_duration
+        # Encode note and rest.
+        self.pitch2idx = {pitch: idx+1 for idx, pitch in enumerate(avl_pitches)}
+        self.idx2pitch = {idx+1: pitch for idx, pitch in enumerate(avl_pitches)}
+
+        # Calculate the length of the encoded array.
+        self.encode_dim = self.bar_num * round(self.bar_beat * self.beat_duration) * round(1/quarter_duration)
+        # Upper bound of the elementin encoded array.
+        self.max_encode = len(self.pitch2idx)
+        
+    def decode(self, stream_arr: np.ndarray) -> Stream:
+        ret_stream = Stream()
+        for code in stream_arr:
+            if code == 0:
+                ret_stream.append(Rest(length=self.quarter_duration))
+            else:
+                new_note = Note(pitch=self.idx2pitch[code], quarterLength=self.quarter_duration)
+                ret_stream.append(new_note)
+
+        return ret_stream
