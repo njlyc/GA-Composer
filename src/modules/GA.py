@@ -4,7 +4,7 @@ from src.modules.opt_wrapper import SOEA_FUNCS, MOEA_FUNCS
 import geatpy as ea
 import numpy as np
 from abc import abstractclassmethod
-from typing import List, Dict, Sequence, Optional
+from typing import List, Dict, Sequence, Optional, Any
 from functools import partial
 
 
@@ -31,7 +31,7 @@ class MultiProblem(ea.Problem):
 
 
 class SingleChromosome_GARunner:
-    def __init__(self, encode_dim: int, max_encode: int, max_iters: int, max_early_stop: int, n_ind: int, fitness_threshold: float, obj_func_list: Sequence[str], opt_algorithm_name: Optional[str] = None, logTras: Optional[int] = None , **kwargs) -> None:
+    def __init__(self, encode_dim: int, max_encode: int, max_iters: int, max_early_stop: int, n_ind: int, fitness_threshold: float, obj_func_list: Sequence[str], opt_algorithm_name: Optional[str] = None, logTras: Optional[int] = None , obj_arg_info: Dict[Any, Any]={}, **kwargs) -> None:
         '''Initialize a single chromosome GA runner
 
         Args:
@@ -44,6 +44,7 @@ class SingleChromosome_GARunner:
             obj_func_list (Sequence[str]): obj function list as the target
             opt_algorithm_name (Optional[str], optional): opt function from geatpy. Defaults to None (Use ea.soea_SEGA_templet/).
             logTras (Optional[int], optional): record information every logTras generations
+            obj_arg_info (Dict[Any, Any]): extra parameters of objective function
         '''
         self.n_ind = n_ind
         self.max_iters = max_iters
@@ -52,7 +53,6 @@ class SingleChromosome_GARunner:
         self.logTras = logTras
 
         obj_func_target_list = [OBJ_SGL_OPT_TARGET[obj_func_name] for obj_func_name in obj_func_list]
-        obj_arg_info = {'fermata_code': max_encode, 'rest_code': 0}
         
         assert len(obj_func_list) > 0, 'obj_func_list should not be empty'
         self.problem = None

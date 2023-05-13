@@ -12,10 +12,10 @@ class GAComposer:
     def __init__(self, code_type: str, translator_args_dict: Dict, ga_args_dict: Dict) -> None:
         if code_type == 'single':
             self.translator = SingleChromosome_StreamTranslator(**translator_args_dict)
-            self.ga_runner = SingleChromosome_GARunner(encode_dim=self.translator.encode_dim, max_encode=self.translator.max_encode, **ga_args_dict)
+            self.ga_runner = SingleChromosome_GARunner(encode_dim=self.translator.encode_dim, max_encode=self.translator.max_encode, obj_arg_info=self.translator.obj_arg_info, **ga_args_dict)
         elif code_type == 'pitchOnly':
             self.translator = PitchOnlyTranslator(**translator_args_dict)
-            self.ga_runner = SingleChromosome_GARunner(encode_dim=self.translator.encode_dim, max_encode=self.translator.max_encode, **ga_args_dict)
+            self.ga_runner = SingleChromosome_GARunner(encode_dim=self.translator.encode_dim, max_encode=self.translator.max_encode, obj_arg_info=self.translator.obj_arg_info, **ga_args_dict)
         # TODO: implement other code type for multi-chromosome
         else:
             raise NotImplementedError('Code type {} is not implemented'.format(code_type))

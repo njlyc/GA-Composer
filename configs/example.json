@@ -18,7 +18,7 @@
         "max_early_stop": 10,
         "n_ind": 32,
         "fitness_threshold":  1e-4,
-        "obj_func_list": ["continous"],
+        "obj_func_list": ["continuous"],
         "opt_algorithm_name": null,
         "logTras": null
     },
