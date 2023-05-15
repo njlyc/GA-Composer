@@ -2,7 +2,7 @@
     "job_name": "test",
     "out_path": "out",
     "code_type": "pitchOnly",
-    "sample_num": 3,
+    "sample_num": 5,
     "lilypondPath": "./lilypond/bin/lilypond.exe",
     "translator_args_dict": 
     {
@@ -10,7 +10,7 @@
         "pitch_highest": "G5", 
         "bar_num": 4, 
         "signature": "4/4", 
-        "quarter_duration": 1.0
+        "quarter_duration": 1
     },
     "ga_args_dict":
     {
