@@ -3,3 +3,5 @@ out_midi
 out
 lilypond
 configs/test.json
+config.json
+main.py

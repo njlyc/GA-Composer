@@ -124,7 +124,9 @@ class PitchOnlyTranslator(Translator):
         ret_stream = Stream()
         for code in stream_arr:
             if code == 0:
-                ret_stream.append(Rest(length=self.quarter_duration))
+                if len(ret_stream) == 0:
+                    ret_stream.append(Rest(length=self.quarter_duration))
+                ret_stream[-1].quarterLength += self.quarter_duration
             else:
                 new_note = Note(pitch=self.idx2pitch[code], quarterLength=self.quarter_duration)
                 ret_stream.append(new_note)
